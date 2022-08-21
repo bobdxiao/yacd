@@ -29,6 +29,7 @@ export type ConnectionItem = {
   chains: string[];
   // e.g. 'Match', 'DomainKeyword'
   rule: string;
+  rulePayload?: string;
 };
 type ConnectionsData = {
   downloadTotal: number;
@@ -50,10 +51,7 @@ function appendData(s: string) {
 type UnsubscribeFn = () => void;
 
 let wsState: number;
-export function fetchData(
-  apiConfig: ClashAPIConfig,
-  listener: unknown
-): UnsubscribeFn | void {
+export function fetchData(apiConfig: ClashAPIConfig, listener: unknown): UnsubscribeFn | void {
   if (fetched || wsState === 1) {
     if (listener) return subscribe(listener);
   }

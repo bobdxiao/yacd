@@ -1,5 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useRecoilState } from 'recoil';
 import {
   fetchRuleProviders,
@@ -19,7 +19,7 @@ export function useUpdateRuleProviderItem(
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation(refreshRuleProviderByName, {
     onSuccess: () => {
-      queryClient.invalidateQueries('/providers/rules');
+      queryClient.invalidateQueries(['/providers/rules']);
     },
   });
   const onClickRefreshButton = (ev: React.MouseEvent<HTMLButtonElement>) => {
@@ -36,7 +36,7 @@ export function useUpdateAllRuleProviderItems(
   const { data: provider } = useRuleProviderQuery(apiConfig);
   const { mutate, isLoading } = useMutation(updateRuleProviders, {
     onSuccess: () => {
-      queryClient.invalidateQueries('/providers/rules');
+      queryClient.invalidateQueries(['/providers/rules']);
     },
   });
   const onClickRefreshButton = (ev: React.MouseEvent<HTMLButtonElement>) => {
@@ -49,8 +49,8 @@ export function useUpdateAllRuleProviderItems(
 export function useInvalidateQueries() {
   const queryClient = useQueryClient();
   return useCallback(() => {
-    queryClient.invalidateQueries('/rules');
-    queryClient.invalidateQueries('/providers/rules');
+    queryClient.invalidateQueries(['/rules']);
+    queryClient.invalidateQueries(['/providers/rules']);
   }, [queryClient]);
 }
 

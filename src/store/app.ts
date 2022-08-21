@@ -22,7 +22,6 @@ export const getLogStreamingPaused = (s: State) => s.app.logStreamingPaused;
 
 const saveStateDebounced = debounce(saveState, 600);
 
-// @ts-expect-error ts-migrate(7030) FIXME: Not all code paths return a value.
 function findClashAPIConfigIndex(getState: GetStateFn, { baseURL, secret }) {
   const arr = getClashAPIConfigs(getState());
   for (let i = 0; i < arr.length; i++) {
@@ -94,25 +93,26 @@ export function updateClashAPIConfig({ baseURL, secret }) {
 }
 
 const rootEl = document.querySelector('html');
-const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-function setTheme(theme = 'dark') {
-  if (theme === 'dark') {
+type ThemeType = 'dark' | 'light' | 'auto';
+
+function setTheme(theme: ThemeType = 'dark') {
+  if (theme === 'auto') {
+    rootEl.setAttribute('data-theme', 'auto');
+  } else if (theme === 'dark') {
     rootEl.setAttribute('data-theme', 'dark');
-    themeColorMeta.setAttribute('content', '#202020');
   } else {
     rootEl.setAttribute('data-theme', 'light');
-    themeColorMeta.setAttribute('content', '#f7f7f7');
   }
 }
 
-export function switchTheme() {
+export function switchTheme(nextTheme = 'auto') {
   return (dispatch: DispatchFn, getState: GetStateFn) => {
     const currentTheme = getTheme(getState());
-    const theme = currentTheme === 'light' ? 'dark' : 'light';
+    if (currentTheme === nextTheme) return;
     // side effect
-    setTheme(theme);
+    setTheme(nextTheme as ThemeType);
     dispatch('storeSwitchTheme', (s) => {
-      s.app.theme = theme;
+      s.app.theme = nextTheme;
     });
     // side effect
     saveState(getState().app);
@@ -193,7 +193,11 @@ export function initialState() {
   if (conf) {
     const url = new URL(conf.baseURL);
     if (query.hostname) {
-      url.hostname = query.hostname;
+      if (query.hostname.indexOf('http') === 0) {
+        url.href = decodeURIComponent(query.hostname);
+      } else {
+        url.hostname = query.hostname;
+      }
     }
     if (query.port) {
       url.port = query.port;

@@ -4,6 +4,7 @@ import Loading from 'src/components/Loading';
 
 import Button from './Button';
 import Input from './Input';
+import { ZapAnimated } from './shared/ZapAnimated';
 import SwitchThemed from './SwitchThemed';
 import ToggleSwitch from './ToggleSwitch';
 
@@ -21,7 +22,7 @@ const optionsRule = [
   { label: 'Direct', value: 'Direct' },
 ];
 
-const Pane = ({ children, style }) => (
+const Pane = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div style={{ ...paneStyle, ...style }}>{children}</div>
 );
 
@@ -42,24 +43,18 @@ class StyleGuide extends PureComponent {
   render() {
     return (
       <div>
-        {/* @ts-expect-error ts-migrate(2741) FIXME: Property 'style' is missing in type '{ children: E... Remove this comment to see the full error message */}
+        <Pane>
+          <ZapAnimated />
+        </Pane>
         <Pane>
           <SwitchExample />
         </Pane>
-        {/* @ts-expect-error ts-migrate(2741) FIXME: Property 'style' is missing in type '{ children: E... Remove this comment to see the full error message */}
         <Pane>
           <Input />
         </Pane>
-        {/* @ts-expect-error ts-migrate(2741) FIXME: Property 'style' is missing in type '{ children: E... Remove this comment to see the full error message */}
         <Pane>
-          <ToggleSwitch
-            name="test"
-            options={optionsRule}
-            value="Rule"
-            onChange={noop}
-          />
+          <ToggleSwitch name="test" options={optionsRule} value="Rule" onChange={noop} />
         </Pane>
-        {/* @ts-expect-error ts-migrate(2741) FIXME: Property 'style' is missing in type '{ children: E... Remove this comment to see the full error message */}
         <Pane>
           <Button text="Test Lxatency" start={<Zap size={16} />} />
           <Button text="Test Lxatency" start={<Zap size={16} />} isLoading />

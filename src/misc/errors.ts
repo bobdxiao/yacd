@@ -1,5 +1,11 @@
 export const DOES_NOT_SUPPORT_FETCH = 0;
 
+export class YacdError extends Error {
+  constructor(public message: string, public code?: string | number) {
+    super(message);
+  }
+}
+
 export const errors = {
   [DOES_NOT_SUPPORT_FETCH]: {
     message: 'Browser not supported!',
