@@ -25,7 +25,9 @@ export const data = {
   order_name_asc: '按名称字母排序 (A-Z)',
   order_name_desc: '按名称字母排序 (Z-A)',
   Connections: '连接',
+  current_backend: '当前后端',
   Active: '活动',
+  switch_backend: '切换后端',
   Closed: '已断开',
   switch_theme: '切换主题',
   theme: '主题',
@@ -36,4 +38,5 @@ export const data = {
   lang: '语言',
   update_all_rule_provider: '更新所有 rule provider',
   update_all_proxy_provider: '更新所有 proxy providers',
+  dark_mode_pure_black_toggle_label: '在黑色主题下使用纯黑背景',
 };

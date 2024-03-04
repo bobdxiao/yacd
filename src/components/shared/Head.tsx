@@ -1,25 +1,16 @@
+import { useAtom } from 'jotai';
 import * as React from 'react';
-import { connect } from 'src/components/StateProvider';
-import { getClashAPIConfig, getClashAPIConfigs } from 'src/store/app';
 
-const mapState = (s) => ({
-  apiConfig: getClashAPIConfig(s),
-  apiConfigs: getClashAPIConfigs(s),
-});
+import { clashAPIConfigsAtom, useApiConfig } from '$src/store/app';
 
-function HeadImpl({
-  apiConfig,
-  apiConfigs,
-}: {
-  apiConfig: { baseURL: string };
-  apiConfigs: any[];
-}) {
+export function Head() {
+  const apiConfig = useApiConfig();
+  const [apiConfigs] = useAtom(clashAPIConfigsAtom);
   React.useEffect(() => {
     let title = 'yacd';
     if (apiConfigs.length > 1) {
       try {
-        const host = new URL(apiConfig.baseURL).host;
-        title = `${host} - yacd`;
+        title = `${apiConfig.metaLabel || new URL(apiConfig.baseURL).host} - yacd`;
       } catch (e) {
         // ignore
       }
@@ -29,5 +20,3 @@ function HeadImpl({
 
   return <></>;
 }
-
-export const Head = connect(mapState)(HeadImpl);

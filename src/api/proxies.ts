@@ -25,7 +25,7 @@ export async function fetchProxies(config: ClashAPIConfig) {
 export async function requestToSwitchProxy(
   apiConfig: ClashAPIConfig,
   groupName: string,
-  name: string
+  name: string,
 ) {
   const body = { name };
   const { url, init } = getURLAndInit(apiConfig);
@@ -41,7 +41,7 @@ export async function requestToSwitchProxy(
 export async function requestDelayForProxy(
   apiConfig: ClashAPIConfig,
   name: string,
-  latencyTestUrl = 'http://www.gstatic.com/generate_204'
+  latencyTestUrl = 'http://www.gstatic.com/generate_204',
 ) {
   const { url, init } = getURLAndInit(apiConfig);
   const qs = `timeout=5000&url=${encodeURIComponent(latencyTestUrl)}`;
@@ -67,5 +67,8 @@ export async function updateProviderByName(config: ClashAPIConfig, name: string)
 export async function healthcheckProviderByName(config: ClashAPIConfig, name: string) {
   const { url, init } = getURLAndInit(config);
   const options = { ...init, method: 'GET' };
-  return await fetch(url + '/providers/proxies/' + encodeURIComponent(name) + '/healthcheck', options);
+  return await fetch(
+    url + '/providers/proxies/' + encodeURIComponent(name) + '/healthcheck',
+    options,
+  );
 }

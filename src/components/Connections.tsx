@@ -5,17 +5,17 @@ import { Pause, Play, X as IconClose } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import { ConnectionItem } from 'src/api/connections';
-import { State } from 'src/store/types';
+
+import { useApiConfig } from '$src/store/app';
 
 import * as connAPI from '../api/connections';
 import useRemainingViewPortHeight from '../hooks/useRemainingViewPortHeight';
-import { getClashAPIConfig } from '../store/app';
 import s from './Connections.module.scss';
 import ConnectionTable from './ConnectionTable';
-import ContentHeader from './ContentHeader';
+import { MutableConnRefCtx } from './conns/ConnCtx';
+import { ContentHeader } from './ContentHeader';
 import ModalCloseAllConnections from './ModalCloseAllConnections';
 import { Action, Fab, position as fabPosition } from './shared/Fab';
-import { connect } from './StateProvider';
 import SvgYacd from './SvgYacd';
 
 const { useEffect, useState, useRef, useCallback } = React;
@@ -29,6 +29,10 @@ function arrayToIdKv<T extends { id: string }>(items: T[]) {
     o[item.id] = item;
   }
   return o;
+}
+
+function basePath(path: string) {
+  return path?.replace(/.*[/\\]/, '');
 }
 
 type FormattedConn = {
@@ -46,12 +50,13 @@ type FormattedConn = {
   host: string;
   type: string;
   network: string;
+  processPath?: string;
   downloadSpeedCurr?: number;
   uploadSpeedCurr?: number;
 };
 
 function hasSubstring(s: string, pat: string) {
-  return s.toLowerCase().includes(pat.toLowerCase());
+  return (s ?? '').toLowerCase().includes(pat.toLowerCase());
 }
 
 function filterConns(conns: FormattedConn[], keyword: string) {
@@ -67,20 +72,25 @@ function filterConns(conns: FormattedConn[], keyword: string) {
           conn.rule,
           conn.type,
           conn.network,
-        ].some((field) => hasSubstring(field, keyword))
+          conn.processPath,
+        ].some((field) => hasSubstring(field, keyword)),
       );
 }
 
-function formatConnectionDataItem(
+function fmtConnItem(
   i: ConnectionItem,
   prevKv: Record<string, { upload: number; download: number }>,
-  now: number
+  now: number,
+  mutConnCtxRef: { hasProcessPath: boolean },
 ): FormattedConn {
   const { id, metadata, upload, download, start, chains, rule, rulePayload } = i;
   const { host, destinationPort, destinationIP, network, type, sourceIP, sourcePort } = metadata;
+  const processPath = metadata.processPath;
+  if (mutConnCtxRef.hasProcessPath === false && typeof processPath !== 'undefined') {
+    mutConnCtxRef.hasProcessPath = true;
+  }
   // host could be an empty string if it's direct IP connection
-  let host2 = host;
-  if (host2 === '') host2 = destinationIP;
+  const host2 = host || destinationIP || '';
   const prev = prevKv[id];
   const ret = {
     id,
@@ -95,6 +105,7 @@ function formatConnectionDataItem(
     source: `${sourceIP}:${sourcePort}`,
     downloadSpeedCurr: download - (prev ? prev.download : 0),
     uploadSpeedCurr: upload - (prev ? prev.upload : 0),
+    process: basePath(processPath),
   };
   return ret;
 }
@@ -113,7 +124,8 @@ function connQty({ qty }) {
   return qty < 100 ? '' + qty : '99+';
 }
 
-function Conn({ apiConfig }) {
+export default function Conn() {
+  const apiConfig = useApiConfig();
   const [refContainer, containerHeight] = useRemainingViewPortHeight();
   const [conns, setConns] = useState([]);
   const [closedConns, setClosedConns] = useState([]);
@@ -124,24 +136,21 @@ function Conn({ apiConfig }) {
   const openCloseAllModal = useCallback(() => setIsCloseAllModalOpen(true), []);
   const closeCloseAllModal = useCallback(() => setIsCloseAllModalOpen(false), []);
   const [isRefreshPaused, setIsRefreshPaused] = useState(false);
-  const toggleIsRefreshPaused = useCallback(() => {
-    setIsRefreshPaused((x) => !x);
-  }, []);
+  const toggleIsRefreshPaused = useCallback(() => setIsRefreshPaused((x) => !x), []);
   const closeAllConnections = useCallback(() => {
     connAPI.closeAllConnections(apiConfig);
     closeCloseAllModal();
   }, [apiConfig, closeCloseAllModal]);
   const prevConnsRef = useRef(conns);
+  const connCtx = React.useContext(MutableConnRefCtx);
   const read = useCallback(
-    ({ connections }) => {
+    ({ connections }: { connections: ConnectionItem[] }) => {
       const prevConnsKv = arrayToIdKv(prevConnsRef.current);
       const now = Date.now();
-      const x = connections.map((c: ConnectionItem) =>
-        formatConnectionDataItem(c, prevConnsKv, now)
-      );
+      const x = connections.map((c) => fmtConnItem(c, prevConnsKv, now, connCtx));
       const closed = [];
       for (const c of prevConnsRef.current) {
-        const idx = x.findIndex((conn: ConnectionItem) => conn.id === c.id);
+        const idx = x.findIndex((conn) => conn.id === c.id);
         if (idx < 0) closed.push(c);
       }
       setClosedConns((prev) => {
@@ -149,7 +158,7 @@ function Conn({ apiConfig }) {
         return [...closed, ...prev].slice(0, 101);
       });
       // if previous connections and current connections are both empty
-      // arrays, we wont update state to avaoid rerender
+      // arrays, we wont update state to avoid rerender
       if (x && (x.length !== 0 || prevConnsRef.current.length !== 0) && !isRefreshPaused) {
         prevConnsRef.current = x;
         setConns(x);
@@ -157,7 +166,7 @@ function Conn({ apiConfig }) {
         prevConnsRef.current = x;
       }
     },
-    [setConns, isRefreshPaused]
+    [setConns, isRefreshPaused, connCtx],
   );
   useEffect(() => {
     return connAPI.fetchData(apiConfig, read);
@@ -230,9 +239,3 @@ function Conn({ apiConfig }) {
     </div>
   );
 }
-
-const mapState = (s: State) => ({
-  apiConfig: getClashAPIConfig(s),
-});
-
-export default connect(mapState)(Conn);

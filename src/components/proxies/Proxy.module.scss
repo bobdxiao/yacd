@@ -16,7 +16,7 @@
   }
 
   max-width: 200px;
-  @media (--breakpoint-not-small) {
+  @media screen and (min-width: 30em) {
     min-width: 200px;
     border-radius: 10px;
     padding: 10px;
@@ -43,7 +43,7 @@
   font-family: var(--font-mono);
   font-size: 0.6em;
   margin-right: 3px;
-  @media (--breakpoint-not-small) {
+  @media screen and (min-width: 30em) {
     font-size: 0.85em;
   }
 }
@@ -57,7 +57,7 @@
 .proxyName {
   width: 100%;
   margin-bottom: 5px;
-  font-size: 0.85em;
+  font-size: 0.8em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -80,7 +80,7 @@
       height: var(--size-dot);
       background-color: #fff;
       // For non-primitive proxy type like "Selector", "LoadBalance", "DIRECT", etc. we are using a transparent
-      // background, and this selected indicator has a white background. In "light" them mode, the constrast
+      // background, and this selected indicator has a white background. In "light" them mode, the contrast
       // between the bg of the indicator and the "background" is too small. In that case we want to add a
       // border around this indicator so it's more distinguishable.
       border: 1px solid var(--color-proxy-dot-selected-ind-bo);

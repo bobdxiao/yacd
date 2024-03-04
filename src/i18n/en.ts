@@ -25,7 +25,9 @@ export const data = {
   order_name_asc: 'By name alphabetically (A-Z)',
   order_name_desc: 'By name alphabetically (Z-A)',
   Connections: 'Connections',
+  current_backend: 'Current Backend',
   Active: 'Active',
+  switch_backend: 'Switch backend',
   Closed: 'Closed',
   switch_theme: 'Switch theme',
   theme: 'theme',
@@ -36,4 +38,5 @@ export const data = {
   lang: 'Language',
   update_all_rule_provider: 'Update all rule providers',
   update_all_proxy_provider: 'Update all proxy providers',
+  dark_mode_pure_black_toggle_label: 'Use pure black in dark mode',
 };

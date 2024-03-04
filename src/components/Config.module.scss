@@ -4,29 +4,30 @@
   grid-template-columns: repeat(auto-fill, minmax(345px, 1fr));
   max-width: 900px;
   gap: 5px;
-  @media (--breakpoint-not-small) {
+  @media screen and (min-width: 30em) {
     gap: 15px;
+  }
+
+  .item {
+    margin-top: 11px;
+    label {
+      padding-left: 12px;
+    }
   }
 }
 
 .root,
 .section {
   padding: 6px 15px 10px;
-  @media (--breakpoint-not-small) {
+  @media screen and (min-width: 30em) {
     padding: 10px 40px 15px;
   }
-}
-
-.wrapSwitch {
-  height: 40px;
-  display: flex;
-  align-items: center;
 }
 
 .sep {
   max-width: 900px;
   padding: 0 15px;
-  @media (--breakpoint-not-small) {
+  @media screen and (min-width: 30em) {
     padding: 0 40px;
   }
   > div {

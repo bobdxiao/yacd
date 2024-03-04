@@ -16,6 +16,7 @@
 }
 
 .input {
+  appearance: none;
   -webkit-appearance: none;
   background-color: var(--color-input-bg);
   background-image: none;
@@ -37,4 +38,7 @@
   top: 50%;
   transform: translateY(-50%);
   left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

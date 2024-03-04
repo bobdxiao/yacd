@@ -1,6 +1,6 @@
-.relative {
-  position: relative;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .border-left,
 .border-top,
@@ -54,7 +54,7 @@
 :root {
   --font-mono: 'Roboto Mono', Menlo, monospace;
   // prettier-ignore
-  --font-normal: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, 'PingFang SC', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  --font-normal: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Apple Color Emoji, Twemoji Country Flags, Segoe UI Emoji, Segoe UI Symbol, 'PingFang SC', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   --color-focus-blue: #1a73e8;
   --btn-bg: #387cec;
 }
@@ -78,7 +78,6 @@ body {
   --color-text-secondary: #ccc;
   --color-text-highlight: #fff;
   --color-bg-sidebar: #2d2d30;
-  --color-sb-active-row-bg: #494b4e;
   --color-input-bg: #2d2d30;
   --color-input-border: #3f3f3f;
   --color-toggle-bg: #353535;
@@ -88,7 +87,7 @@ body {
   --color-btn-bg: #232323;
   --color-btn-fg: #bebebe;
   --color-bg-proxy: #303030;
-  --color-row-odd: #282828;
+  --color-row-odd: #333;
   --bg-log-info-tag: #454545;
   --bg-modal: #1f1f20;
   --bg-near-transparent: rgba(255, 255, 255, 0.1);
@@ -97,6 +96,7 @@ body {
   --select-border-color: #040404;
   --select-bg-hover: url(data:image/svg+xml,%0A%20%20%20%20%3Csvg%20width%3D%228%22%20height%3D%2224%22%20viewBox%3D%220%200%208%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M4%207L7%2011H1L4%207Z%22%20fill%3D%22%23ffffff%22%20%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M4%2017L1%2013L7%2013L4%2017Z%22%20fill%3D%22%23ffffff%22%20%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20);
   --color-proxy-dot-selected-ind-bo: transparent;
+  --bg-toggle-track: #393939;
 }
 @mixin light {
   --color-background: #eee;
@@ -107,7 +107,6 @@ body {
   --color-text-secondary: #646464;
   --color-text-highlight: #040404;
   --color-bg-sidebar: #f8f8f8;
-  --color-sb-active-row-bg: #d8d8d8;
   --color-input-bg: #f0f0f0;
   --color-input-border: #c0c0c0;
   --color-toggle-bg: #ffffff;
@@ -117,7 +116,7 @@ body {
   --color-btn-bg: #f4f4f4;
   --color-btn-fg: #101010;
   --color-bg-proxy: #fafafa;
-  --color-row-odd: #f5f5f5;
+  --color-row-odd: #e1e1e1;
   --bg-log-info-tag: #888;
   --bg-modal: #fbfbfb;
   --bg-near-transparent: rgba(0, 0, 0, 0.1);
@@ -126,6 +125,7 @@ body {
   --select-border-color: #999999;
   --select-bg-hover: url(data:image/svg+xml,%0A%20%20%20%20%3Csvg%20width%3D%228%22%20height%3D%2224%22%20viewBox%3D%220%200%208%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M4%207L7%2011H1L4%207Z%22%20fill%3D%22%23222222%22%20%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M4%2017L1%2013L7%2013L4%2017Z%22%20fill%3D%22%23222222%22%20%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20);
   --color-proxy-dot-selected-ind-bo: #888;
+  --bg-toggle-track: #d0d0d0;
 }
 
 :root[data-theme='auto'] {
@@ -147,6 +147,27 @@ body {
 :root[data-theme='light'] {
   @include light;
   color-scheme: light;
+}
+
+@mixin blackDark {
+  --color-background: #000000;
+  --color-input-bg: #111111;
+  --color-background2: rgba(0, 0, 0, 0.3);
+  --color-bg-card: #1c1c1c;
+}
+
+:root[data-theme='dark'] {
+  .pureBlackDark {
+    @include blackDark;
+  }
+}
+
+:root[data-theme='auto'] {
+  @media (prefers-color-scheme: dark) {
+    .pureBlackDark {
+      @include blackDark;
+    }
+  }
 }
 
 .flexCenter {
@@ -190,3 +211,16 @@ body {
   border: solid 1px var(--bc-tooltip);
   border-radius: 4px;
 }
+
+// .relative {
+//   position: relative;
+// }
+// .fixed {
+//   position: fixed;
+// }
+// .left-0 {
+//   left: 0;
+// }
+// .bottom-0 {
+//   bottom: 0;
+// }
